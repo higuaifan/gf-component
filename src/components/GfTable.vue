@@ -16,10 +16,12 @@
 
 <script>
     /**
-     * @description GfTable组件
+     * @description GfTable组件 本组件依赖于一个封装好的axios
      * @author: 菩萨蛮
      * @date: 2019-09-12 10:31
-     * @version: V2.0.0
+     * @version: v2.0.1
+     *
+     * v2.0.1 **影响系统级改动** 修改qGet的url默认编码方式
      */
     import qs from 'qs';
 
@@ -33,14 +35,9 @@
                 type: String,
                 default: 'total, sizes, prev, pager, next, jumper'
             },
-            indices: {
-                type: Boolean,
-                default: true
-            },
-            position: {
-                type: String,
-                default: 'right'
-            }
+            indices: { type: Boolean, default: true },
+            position: { type: String, default: 'right' },
+            notEncode: { type: Boolean, default: true }
         },
         data() {
             return {
@@ -100,8 +97,9 @@
                     this.page.pageNum = pageNum;
                 }
                 const { data } = await this.qGet({
-                    url: `${this.gfTable.url}?${decodeURIComponent(qs.stringify(Object.assign(this.searchObj,
-                        this.page), { indices: this.indices }))}`
+                    notEncode: this.notEncode,
+                    url: `${this.qxTable.url}?${qs.stringify(Object.assign(this.searchObj,
+                        this.page), { indices: this.indices })}`
                 }).catch(e => console.error(e));
                 this.table = data.datas || data.supplierList
                     || data.supplierGradleList || data.goods.dataList;
